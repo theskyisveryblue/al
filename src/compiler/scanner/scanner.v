@@ -181,6 +181,7 @@ pub fn (mut s Scanner) scan_next() compiler.Token {
 			s.incr_pos()
 			return s.new_token(.logical_and, none)
 		}
+		return s.new_token(.bitwise_and, none)
 	}
 
 	if ch == `|` {
@@ -188,6 +189,11 @@ pub fn (mut s Scanner) scan_next() compiler.Token {
 			s.incr_pos()
 			return s.new_token(.logical_or, none)
 		}
+		return s.new_token(.bitwise_or, none)
+	}
+
+	if ch == `^` {
+		return s.new_token(.bitwise_xor, none)
 	}
 
 	return match ch {

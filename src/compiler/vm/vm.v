@@ -174,6 +174,21 @@ fn (mut vm VM) execute() !bytecode.Value {
 				a := vm.pop()!
 				vm.stack << !vm.is_truthy(a)
 			}
+			.bitwise_and {
+				b := vm.pop()!
+				a := vm.pop()!
+				vm.stack << vm.binary_op(a, b, .bitwise_and)!
+			}
+			.bitwise_or {
+				b := vm.pop()!
+				a := vm.pop()!
+				vm.stack << vm.binary_op(a, b, .bitwise_or)!
+			}
+			.bitwise_xor {
+				b := vm.pop()!
+				a := vm.pop()!
+				vm.stack << vm.binary_op(a, b, .bitwise_xor)!
+			}
 			.jump {
 				vm.frames[vm.frames.len - 1].ip = instr.operand - frame.func.code_start
 			}
@@ -709,6 +724,9 @@ fn (vm VM) binary_op(a bytecode.Value, b bytecode.Value, op bytecode.Op) !byteco
 			.mul { a * b }
 			.div { a / b }
 			.mod { a % b }
+			.bitwise_and { a & b }
+			.bitwise_or { a | b }
+			.bitwise_xor { a ^ b }
 			else { error('Unknown binary op') }
 		}
 	}

@@ -316,7 +316,8 @@ fn (mut p Parser) parse_logical_or() !ast.Expression {
 }
 
 fn (mut p Parser) parse_logical_and() !ast.Expression {
-	mut left := p.parse_equality()!
+	mut left := p.parse_bitwise_or()!
+
 
 	for p.current_token.kind == .logical_and {
 		span := p.current_span()
@@ -327,6 +328,66 @@ fn (mut p Parser) parse_logical_and() !ast.Expression {
 			right: right
 			op:    ast.Operator{
 				kind: .logical_and
+			}
+			span:  span
+		}
+	}
+
+	return left
+}
+
+fn (mut p Parser) parse_bitwise_or() !ast.Expression {
+	mut left := p.parse_bitwise_xor()!
+
+	for p.current_token.kind == .bitwise_or {
+		span := p.current_span()
+		p.eat(.bitwise_or)!
+		right := p.parse_bitwise_xor()!
+		left = ast.BinaryExpression{
+			left:  left
+			right: right
+			op:    ast.Operator{
+				kind: .bitwise_or
+			}
+			span:  span
+		}
+	}
+
+	return left
+}
+
+fn (mut p Parser) parse_bitwise_xor() !ast.Expression {
+	mut left := p.parse_bitwise_and()!
+
+	for p.current_token.kind == .bitwise_xor {
+		span := p.current_span()
+		p.eat(.bitwise_xor)!
+		right := p.parse_bitwise_and()!
+		left = ast.BinaryExpression{
+			left:  left
+			right: right
+			op:    ast.Operator{
+				kind: .bitwise_xor
+			}
+			span:  span
+		}
+	}
+
+	return left
+}
+
+fn (mut p Parser) parse_bitwise_and() !ast.Expression {
+	mut left := p.parse_equality()!
+
+	for p.current_token.kind == .bitwise_and {
+		span := p.current_span()
+		p.eat(.bitwise_and)!
+		right := p.parse_equality()!
+		left = ast.BinaryExpression{
+			left:  left
+			right: right
+			op:    ast.Operator{
+				kind: .bitwise_and
 			}
 			span:  span
 		}

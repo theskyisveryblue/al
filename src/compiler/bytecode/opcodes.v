@@ -29,6 +29,9 @@ pub enum Op {
 
 	// Logic
 	not
+	bitwise_and
+	bitwise_or
+	bitwise_xor
 
 	// Control flow
 	jump          // unconditional jump: jump <addr>
